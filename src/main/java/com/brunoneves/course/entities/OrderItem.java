@@ -4,7 +4,6 @@ import com.brunoneves.course.entities.pk.OrderItemPK;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.io.Serializable;
@@ -51,6 +50,10 @@ public class OrderItem implements Serializable {
     }
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Double getSubTotal() {
+        return this.quantity * this.price;
     }
 
     @Override

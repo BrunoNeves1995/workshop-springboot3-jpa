@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Entity
 @Table(name = "tb_order")
@@ -83,6 +84,14 @@ public class Order implements Serializable {
     }
     public void setPayment(Payment payment) {
         this.payment = payment;
+    }
+
+    public Double gettotal(){
+
+        AtomicReference<Double> sumTotal = new AtomicReference<>(0.0);
+
+        items.forEach(items -> sumTotal.updateAndGet(v -> v + items.getSubTotal()));
+        return  sumTotal.get();
     }
 
     @Override
