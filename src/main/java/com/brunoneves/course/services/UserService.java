@@ -37,4 +37,16 @@ public class UserService {
             userRepository.delete(user);
     }
 
+    public User update(Long id, User user){
+        User enity = userRepository.getReferenceById(id);
+        updateData(enity, user);
+        return userRepository.save(enity);
+    }
+
+    private void updateData(User enity, User user) {
+        enity.setName(user.getName());
+        enity.setEmail(user.getEmail());
+        enity.setPhone(user.getPhone());
+    }
+
 }
