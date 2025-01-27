@@ -1,5 +1,6 @@
 package com.brunoneves.course.services;
 
+import com.brunoneves.course.DTO.UserDTO;
 import com.brunoneves.course.entities.User;
 import com.brunoneves.course.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,11 @@ public class UserService {
     }
 
     public User findById(Long id){
-      Optional<User> user = userRepository.findById(id);
-      return user.get();
+      return userRepository.findById(id).get();
+    }
+
+    public User insert(User user){
+        return userRepository.save(user);
     }
 
 }
