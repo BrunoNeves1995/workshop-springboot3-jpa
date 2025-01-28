@@ -5,6 +5,7 @@ import com.brunoneves.course.entities.User;
 import com.brunoneves.course.repositories.UserRepository;
 import com.brunoneves.course.services.exceptions.DatabaseException;
 import com.brunoneves.course.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.JDBCException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -45,9 +46,13 @@ public class UserService {
     }
 
     public User update(Long id, User user) {
-        User enity = userRepository.getReferenceById(id);
-        updateData(enity, user);
-        return userRepository.save(enity);
+        try {
+            User enity = userRepository.getReferenceById(id);
+            updateData(enity, user);
+            return userRepository.save(enity);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     private void updateData(User enity, User user) {
