@@ -1,5 +1,6 @@
 package com.brunoneves.course.resource.exceptions;
 
+import com.brunoneves.course.services.exceptions.DatabaseException;
 import com.brunoneves.course.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -12,13 +13,23 @@ import java.time.Instant;
 @ControllerAdvice
 public class ResourceExceptionHandler {
 
-    @ExceptionHandler(exception = ResourceNotFoundException.class)
-    public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request){
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {
         String error = "Resource not found";
-        HttpStatus status =  HttpStatus.valueOf(404);
+        HttpStatus status = HttpStatus.valueOf(404);
 
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
 
         return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(exception = DatabaseException.class)
+    public ResponseEntity<StandardError> database(DatabaseException e, HttpServletRequest request) {
+        String error = "Database error";
+        HttpStatus status = HttpStatus.valueOf(400);
+
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+
+        return ResponseEntity.status(status.value()).body(err);
     }
 }

@@ -3,9 +3,12 @@ package com.brunoneves.course.services;
 import com.brunoneves.course.DTO.UserDTO;
 import com.brunoneves.course.entities.User;
 import com.brunoneves.course.repositories.UserRepository;
+import com.brunoneves.course.services.exceptions.DatabaseException;
 import com.brunoneves.course.services.exceptions.ResourceNotFoundException;
 import org.hibernate.JDBCException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -33,13 +36,15 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        User user = findById(id);
-
-        if (user != null)
+        try {
+            User user = findById(id);
             userRepository.delete(user);
+        } catch (DataIntegrityViolationException  e) {
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
-    public User update(Long id, User user){
+    public User update(Long id, User user) {
         User enity = userRepository.getReferenceById(id);
         updateData(enity, user);
         return userRepository.save(enity);
